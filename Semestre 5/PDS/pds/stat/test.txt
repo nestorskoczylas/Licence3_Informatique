@@ -1,0 +1,17 @@
+Exercice 7   Quel appel système permet à la commande stat d’obtenir les métadonnées qu’elle affiche ?
+
+Quel est le type, en C, utilisé pour les représenter ?
+
+Que représentent les champs « Blocs » et « Blocs d’E/S » (« IO Blocks ») affichées par la commande stat selon le manuel ? Utilisez les différentes pages pour retrouver cette information.
+
+Exercice 8   Ajoutez du texte dans votre fichier jusqu’à trouver le seuil de taille pour lequel le nombre de blocs augmente. De combien augmente-t-il ? Pourquoi ?
+
+Intéressons-nous maintenant au champ « Liens ». Les liens permettent d’accéder à un même i-nœud par plusieurs chemins différents. Il existe deux types de liens : les liens physiques (hard link) et les liens symboliques (soft link or symbolic link).
+
+La commande ln (pour link) permet de créer un lien.
+
+Exercice 9   Créez un lien physique et un lien symbolique pointant sur votre fichier test. Créez aussi une copie de votre fichier test.
+
+Exercice 10   Exécutez stat sur le fichier, sur sa copie, et sur ses deux liens et comparez les résultats. Que constatez-vous pour le champ « Liens » ? Comparez aussi les numéros d’i-nœuds.
+
+Supprimez le fichier test. Pouvez-vous retrouver le texte que vous aviez écrit à travers le lien symbolique ? le lien physique ? la copie ? 

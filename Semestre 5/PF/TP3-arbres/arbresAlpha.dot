@@ -1,0 +1,56 @@
+/* En tête */
+digraph "Arbre" {
+node  [fontname="DejaVu-Sans", shape=circle]
+/* Liste des noeuds */
+
+a[color=black, fontcolor=black]
+b[color=black, fontcolor=black]
+c[color=black, fontcolor=black]
+d[color=black, fontcolor=black]
+e[color=black, fontcolor=black]
+f[color=black, fontcolor=black]
+g[color=black, fontcolor=black]
+h[color=black, fontcolor=black]
+i[color=black, fontcolor=black]
+j[color=black, fontcolor=black]
+k[color=black, fontcolor=black]
+l[color=black, fontcolor=black]
+m[color=black, fontcolor=black]
+o[color=black, fontcolor=black]
+p[color=black, fontcolor=black]
+q[color=red, fontcolor=red]
+r[color=black, fontcolor=black]
+s[color=black, fontcolor=black]
+t[color=black, fontcolor=black]
+u[color=black, fontcolor=black]
+v[color=black, fontcolor=black]
+w[color=black, fontcolor=black]
+x[color=black, fontcolor=black]
+y[color=red, fontcolor=red]
+z[color=black, fontcolor=black]
+/* Liste des arcs */
+h->q
+h->d
+q->u
+q->l
+u->w
+u->s
+w->y
+w->v
+y->z
+y->x
+s->t
+s->r
+l->o
+l->j
+o->p
+o->m
+j->k
+j->i
+d->f
+d->b
+f->g
+f->e
+b->c
+b->a
+}
