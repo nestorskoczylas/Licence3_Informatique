@@ -1,0 +1,70 @@
+<html>
+<head>
+  <script lang="js" src="/tools.js"></script>
+  <script lang="js" src="/processing2.js"></script>
+
+  <script lang="js" src="/features/generic.js"></script>
+  <script lang="js" src="/features/rgb_pixels.js"></script>
+
+  <script lang="js" src="/metrics/generic.js"></script>
+  <script lang="js" src="/metrics/rgb_pixels_metrics.js"></script>
+
+  <script lang="js" src="/animation/circles.js"></script>
+
+  <script lang="js" src="/tracking/MeanShift.js"></script>
+</head>
+<body onload="javascript:run()"><!-- style="background-color:black;"-->
+
+  <canvas id="input" width="150" height="100" style="vertical-align:top" ></canvas>
+  <canvas id="output2" width="250" height="400"></canvas>
+
+
+  <script lang="javascript">
+    var run=function() {
+      var _opt_options={
+        x0:10,y0:10,radius:10,step_x:2,step_y:2,random:true,
+        fillColor0:[255,0,0,255],
+        fillColor1:[127,0,0,255],
+        fillColorNbSteps:100,
+        bgColor0:[0,255,0,255],
+        bgColor1:[255,0,0,255],
+        bgColorNbSteps:100
+      };
+      var _task1=new MovingCircleHChangingColorChangingBackground("input",_opt_options);
+
+      var _bbox={x0:0,y0:0,dx:20,dy:20};
+
+      var _tracking_options={
+        window_width:40,
+        window_height:40,
+        step_x:3,
+        step_y:3,
+        update_model:false
+      };
+
+      var _task2=new MeanShift(_bbox,
+        RGBPixelsMeanRegionFeatureAlphaFactor,
+        rgb_pixels_metrics.edist,
+        _tracking_options);
+
+      var _proc2=new processing2("input",_task2,"output2");
+
+
+      var count=0;
+      _task1.draw();
+      var loop=function() {
+        _proc2.do_process();
+        _task1.animate();
+
+        count++;
+
+        if (count<1000)
+          setTimeout(loop,100);
+      }
+
+      loop();
+    }
+
+  </script>
+</body>
+</html>

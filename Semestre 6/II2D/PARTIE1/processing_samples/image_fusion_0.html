@@ -1,0 +1,24 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../multi/fusion/MeanFuseMultiImagesTask.js"></script>
+<script lang="js" src="../multi_processing.js"></script>
+</head>
+<body>
+  <video autoplay loop src="../data/happy.mp4" id="input1" width="320" height="180"></video>
+  <br></br>
+  <video autoplay loop src="../data/surprise.mp4" id="input2" width="320" height="180"></video>
+  <br></br>
+  <canvas id="output" width="320" height="180"></canvas>
+
+  <script lang="javascript">
+    var _task=new MeanFuseMultiImagesTask()
+    var _proc=new multi_processing({0:"input1",1:"input2"},_task,"output");
+    var loop=function() {
+      _proc.do_process();
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

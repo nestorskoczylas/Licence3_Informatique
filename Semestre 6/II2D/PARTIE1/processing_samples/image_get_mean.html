@@ -1,0 +1,39 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../features/pixels/GetPixelRGBATask.js"></script>
+<script lang="js" src="../processing.js"></script>
+</head>
+<body>
+  <img src="../data/tambour.png" id="image" height="240" width="240"></img>
+  <div id="imageOutput"></div>
+  <br></br>
+  <video autoplay src="../data/happy.mp4" id="video" width="320" height="180"></video>
+  <div id="videoOutput"></div>
+  <br></br>
+  
+
+  <script lang="javascript">
+    
+    var _output = document.getElementById("imageOutput");
+    var _opt_options = {x : 100, y : 100, output : _output};
+    var _task = new GetMeanPixelTask(_opt_options);
+    var _procImage = new processing("image", _task);
+    var imgElt = document.getElementById("image");
+    imgElt.onload = function() {
+      _procImage.do_process();
+    }
+    
+    var _output = document.getElementById("videoOutput");
+    var _opt_options = {x : 100, y : 100, output : _output};
+    var _task = new GetMeanPixelTask(_opt_options);
+    var _procVideo = new processing("video", _task);
+    loop = function() {
+      _procVideo.do_process();
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+  </script>
+</body>
+</html>

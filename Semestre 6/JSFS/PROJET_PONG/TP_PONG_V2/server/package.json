@@ -1,0 +1,12 @@
+{
+  "name": "pong",
+  "version": "1.0.0",
+  "description": "le célèbre jeu Pong",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "YOU",
+  "license": "ISC"
+}

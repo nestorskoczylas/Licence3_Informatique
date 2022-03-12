@@ -1,0 +1,23 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../features/pixels/GetPixelRGBATask.js"></script>
+<script lang="js" src="../processing.js"></script>
+</head>
+<body>
+  <img src="../data/tambour.png" id="input" height="240" width="240"></img>
+  <br></br>
+  <div id="output"></div>
+
+  <script lang="javascript">
+    var _output = document.getElementById("output");
+    var _opt_options = {x : 100,y : 100, output : _output};
+    var _task = new GetRandomRGBAPixelTask(_opt_options);
+    var _proc = new processing("input", _task);
+    var imgElt = document.getElementById("input");
+    imgElt.onload = function() {
+      _proc.do_process();
+    }
+  </script>
+</body>
+</html>

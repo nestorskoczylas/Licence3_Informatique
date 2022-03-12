@@ -1,0 +1,34 @@
+<html>
+<head>
+  <script lang="js" src="../tools.js"></script>
+
+  <script lang="js" src="../dataset/PartsOfImageDataset.js"></script>
+
+  <script lang="js" src="../features/generic.js"></script>
+  <script lang="js" src="../features/rgb_pixels.js"></script>
+
+  <script lang="js" src="../metrics/generic.js"></script>
+  <script lang="js" src="../metrics/rgb_pixels_metrics.js"></script>
+
+  <script lang="js" src="../similarity/GenericSimilarityTask.js"></script>
+  <script lang="js" src="../similarity/rgb_pixels.js"></script>
+
+  <script lang="js" src="../lookup/LookupRGBPixelsMeanSameSizeTemplateTask.js"></script>
+</head>
+<body>
+Template<br></br>
+<img width="32" height="32" id='model' src='../data/red.png'></img><br></br>
+Target<br></br>
+<img width="84" height="84" id='input1' src='../data/I1.png'></img>
+<br></br>
+<button onclick="javascript:doLookup()">Trouve !</button>
+
+<div id="res"></div>
+
+<script lang="javascript">
+  function doLookup() {
+    var _task=new LookupRGBPixelsMeanSameSizeTemplateTask('model',2);
+    console.log(_task.process(Tools.get_imageData_from_imgEltId('input1')));
+  }
+</script>
+</body></html>

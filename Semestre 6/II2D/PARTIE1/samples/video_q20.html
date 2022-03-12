@@ -1,0 +1,34 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../features/pixels.js"></script>
+<script lang="js" src="../filters/bandw/ToGrayOutsideRadiusMovingX2Task.js"></script>
+<script lang="js" src="../processing.js"></script>
+</head>
+<body>
+  <video id="input2" src="../data/surprise.mp4" width="320" height="180" autoplay></video>
+
+  <br></br>
+    <canvas id="output2" width="320" height="180"></canvas>
+
+  <script lang="javascript">
+    var canvas = document.getElementById("output2");
+    var ctx2d = canvas.getContext("2d");
+    var _output2=document.getElementById("output2");
+    var _opt_options2={ctx:ctx2d,canvas:canvas,radius:50,pixel:[canvas.width/2,canvas.height/2], dx:2, dy:2};
+    var _task2=new ToGrayOutsideRadiusMovingX2Task(_opt_options2);
+    var _proc2=new processing("input2",_task2);
+    var videoElt = document.getElementById("input2");
+    
+    videoElt.addEventListener("playing",function() {
+        loop();
+    });
+
+    var loop=function() {
+      _proc2.do_process();
+
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>

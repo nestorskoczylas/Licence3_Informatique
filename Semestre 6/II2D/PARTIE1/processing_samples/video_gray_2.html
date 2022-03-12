@@ -1,0 +1,22 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../filters/gray_filters/RandomPartialGrayTask.js"></script>
+<script lang="js" src="../processing.js"></script>
+</head>
+<body>
+  <video autoplay loop src="../data/happy.mp4" id="input" width="320" height="180"></video>
+  <canvas id="output" width="320" height="180"></canvas>
+
+  <script lang="javascript">
+    var _opt_options={reg_x:0,reg_y:0,reg_w:160,reg_h:90,cvs_w:320,csv_h:180};
+    var _task=new RandomPartialGrayTask(_opt_options)
+    var _proc=new processing("input",_task,"output");
+    var loop=function() {
+      _proc.do_process();_task.random_focus();
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>

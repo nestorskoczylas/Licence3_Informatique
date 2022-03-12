@@ -1,0 +1,69 @@
+<html>
+<head>
+  <script lang="js" src="/tools.js"></script>
+  <script lang="js" src="/processing2.js"></script>
+
+  <script lang="js" src="/features/generic.js"></script>
+  <script lang="js" src="/features/rgb_pixels.js"></script>
+
+  <script lang="js" src="/metrics/generic.js"></script>
+  <script lang="js" src="/metrics/rgb_pixels_metrics.js"></script>
+
+  <script lang="js" src="/animation/circles.js"></script>
+
+  <script lang="js" src="/tracking/MeanShift.js"></script>
+</head>
+<body onload="javascript:run()">
+    <!-- the onload ensures that all the <head> js scripts are loaded -->
+
+  <canvas id="input" width="150" height="100" style="vertical-align:top" ></canvas>
+  <canvas id="output2" width="250" height="700"></canvas>
+
+
+  <script lang="javascript">
+
+    var run=function() {
+
+      var _opt_options={x0:10,y0:10,radius:10,step_x:2,step_y:2,random:true,fillStyle:"red"};
+      var _task1=new MovingCircle("input",_opt_options);
+
+      var _bbox={x0:0,y0:0,dx:20,dy:20};
+
+      var _tracking_options={
+        window_width:40,
+        window_height:40,
+        step_x:3,
+        step_y:3
+      };
+      // la bbox c'est la boiboite rose autour de la baballe
+      // on crée un bbox avec son somment en 0 0 de taille 20 sur 20 pixels
+      // on crée un meanshift qui utilse la fonction RGBPixelsMeanRegionFeatureAlphaFactor sur cette bbox
+      // avec comme option de tracking 
+      // vitesse horizontale et verticale de 3
+      // et une taille de fenetre de 40 par 40
+      
+      var _task2=new MeanShift(_bbox,
+        RGBPixelsMeanRegionFeatureAlphaFactor,
+        rgb_pixels_metrics.edist,
+        _tracking_options);
+
+      var _proc2=new processing2("input",_task2,"output2");
+
+
+      var count=0;
+      _task1.draw();
+      var loop=function() {
+        _proc2.do_process();
+        _task1.animate();
+
+        count++;
+
+        if (count<1000)
+          setTimeout(loop,100);
+      }
+
+      loop();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<html>
+  <body>
+    <canvas id="input" width="320" height="240"/><br/>
+    <script type="text/javascript">
+
+      var canvas = document.getElementById("input");
+      var ctx2d = canvas.getContext("2d");
+      var width = canvas.width, height = canvas.height;
+
+      //BLOC1
+      //crée un objet image avec son coin haut gauche en 0 0 
+      //et de la même taille que le canvas et récupère dans la variable pixels le tableau
+      //des valeurs de tout les pixels de l'image.
+      var imgData = ctx2d.getImageData(width/4,height/4,width/2,height/2);
+      var pixels = imgData.data;
+
+      //BLOC2
+      //Double boucle pour faire un degradé de couleur 
+      // du noir vers la couleur du canal choisit à la ligne 24
+      // et un dégradé en transparence(ligne 25)
+      for (var x = 0; x < imgData.width; x++) {
+        for (var y = 0; y < imgData.height; y++) {
+          var pos_pixel_dans_vector = (y * imgData.width + x)<<2;
+          pixels[pos_pixel_dans_vector + 1] = (255 * x) / imgData.width;
+          pixels[pos_pixel_dans_vector + 3] = (255 * x) / imgData.height;
+        }
+      }
+
+      ctx2d.putImageData(imgData,width/4,height/4);
+      </script>
+    </body>
+  </html>

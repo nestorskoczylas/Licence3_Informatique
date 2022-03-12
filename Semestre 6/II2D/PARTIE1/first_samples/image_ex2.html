@@ -1,0 +1,51 @@
+<html>
+  <body>
+    <img id="input" src="../data/tambour.png" width="240" height="320"/>
+    <script type="text/javascript">
+
+      //BLOC1
+      //recupère la balise img avec l'id input
+      var imgElt = document.getElementById("input");
+
+
+      //BLOC2
+      //crée un canvas de meme longeur et largeur que la taille de l'image
+      var canvas = document.createElement("canvas");
+      canvas.width = imgElt.width; canvas.height = imgElt.height;
+
+      //BLOC3
+      //crée un nouvel objet canvas
+      //donne au canvas un context en 2D
+      //dessine l'image de la taille du canvas avec son sommet haut gauche en 0 0
+      var ctx2d = canvas.getContext("2d");
+      ctx2d.drawImage(imgElt, 0, 0, canvas.width, canvas.height);
+
+      //BLOC4
+      //Recupère les données des pixels de l'image de la partie haute gauche de l'image
+      //(la zone va du coin 0, 0 au coin se trouvant a la moité de la hauteur et de la longeur)
+      var imgData = ctx2d.getImageData(0, 0, canvas.width/2, canvas.height/2);
+      var pixels = imgData.data;
+
+      //BLOC5
+      //Pour chaque pixels de la zone définie ci dessus
+      //on récupere les valeurs r g et b on fait la moyenne des valeurs
+      //et on associe cette moyenne au pixel
+      //le pixel est donc en niveau de gris
+      
+      for (var x = 0; x <imgData.width ; x++)
+        for (var y = 0; y<imgData.height; y++) {
+
+
+          var pos = (y * imgData.width + x)<<2;
+
+          var r = pixels[pos + 0], g = pixels[pos + 1], b = pixels[pos + 2], a = pixels[pos + 3];
+
+          var mean=(r+g+b)/3;
+
+          pixels[pos + 0] = mean;  pixels[pos + 1] = mean; pixels[pos + 2] = mean; pixels[pos + 3] = a;
+        }
+      ctx2d.putImageData(imgData,0,0);
+
+      </script>
+    </body>
+  </html>

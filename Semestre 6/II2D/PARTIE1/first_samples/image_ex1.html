@@ -1,0 +1,46 @@
+<html>
+  <body>
+    <img id="input" src="../data/tambour.png" width="240" height="320"/>
+    <script type="text/javascript">
+
+
+      //quand on lance cette page, le navigateur affiche que le pixels
+      //en 50 50 à une valeur r g b et a = 0 ceci est faux.
+
+      //BLOC1
+      //recupère la balise img avec l'id input
+      var imgElt = document.getElementById("input");
+
+      //BLOC2
+      //crée un canvas de meme longeur et largeur que la taille de l'image
+      var canvas = document.createElement("canvas");
+      canvas.width = imgElt.width; canvas.height = imgElt.height;
+      document.body.append(canvas);
+
+      //BLOC3
+      //crée un nouvel objet canvas
+      //donne au canvas un context en 2D
+      //dessine l'image de la taille du canvas avec son sommet haut gauche en 0 0
+      var ctx2d = canvas.getContext("2d");
+      ctx2d.drawImage(imgElt, 0, 0, canvas.width, canvas.height);
+
+
+      //BLOC4
+      //Recupère les données des pixels de l'imge
+      var imgData = ctx2d.getImageData(0, 0, canvas.width, canvas.height);
+      var pixels = imgData.data;
+
+      //BLOC5
+      //recupere les valeurs r g b et a du pixels 50 50 de l'image
+      var x = 50; var y = 50;
+      var pos_pixel_dans_vector = (y * imgData.width + x)<<2;
+      var r = pixels[pos_pixel_dans_vector + 0];
+      var g = pixels[pos_pixel_dans_vector + 1];
+      var b = pixels[pos_pixel_dans_vector + 2];
+      var a = pixels[pos_pixel_dans_vector + 3];
+
+      alert("Pixel at ("+x+", "+y+") : ("+r+", "+g+", "+b+", "+a+")");
+
+      </script>
+    </body>
+  </html>

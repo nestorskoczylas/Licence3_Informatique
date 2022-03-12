@@ -1,0 +1,30 @@
+<html>
+  <body>
+    <canvas id="input" width="320" height="240"/><br/>
+    <script type="text/javascript">
+
+      var canvas = document.getElementById("input");
+      var ctx2d = canvas.getContext("2d");
+      var imgData = ctx2d.getImageData(0,0,canvas.width,canvas.height);
+      var pixels = imgData.data;
+
+      //BLOC1
+      //Boucle pour créer un dégradé en transparence de la ligne.
+      // pos_pixel_dans_vector + 0 modifie la composante rouge du pixel
+      // pos_pixel_dans_vector + 1 modifie la composante verte 
+      // en changeant à pos_pixel_dans_vector + 1 la composante rouge passe à 0
+      // et la verte à 255 donc la couleur passe au vert.
+      var x = 100;
+      for (var y = 0; y < imgData.height; y++) {
+        var pos_pixel_dans_vector = (y * imgData.width + x)<<2;
+        pixels[pos_pixel_dans_vector + 1] = 255;
+        pixels[pos_pixel_dans_vector + 3] = (255 * y) / imgData.height;
+      }
+
+      //BLOC2
+      //dans le bloc du dessus on modifie le tableau de valeurs des pixels
+      //avec putImageDate on affiche ces modifications
+      ctx2d.putImageData(imgData,0,0);
+      </script>
+    </body>
+  </html>

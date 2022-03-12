@@ -1,0 +1,57 @@
+<html>
+  <body>
+    <video id="input" src="../data/surprise.mp4" width="320" height="180" autoplay></video>
+    <canvas id="output" width="320" height="180"></canvas>
+
+    <script type="text/javascript">
+
+      //effectue la modification des pixels de la video pour toutes le frames grace au loop
+
+      //BLOC1
+      //recupere la video
+      var videoElt = document.getElementById("input");
+
+      //BLOC2
+      //crée un nouvel objet canvas
+      //donne au canvas un context en 2D
+      //dessine la video de la taille du canvas avec son sommet haut gauche en 0 0 pour chaque frame grace au loop
+      var canvas = document.getElementById("output");
+      var ctx2d = canvas.getContext("2d");
+
+      loop=function() {
+
+        ctx2d.drawImage(videoElt, 0, 0, canvas.width, canvas.height);
+
+        //BLOC3
+        //Recupère les données des pixels de l'image de la partie haute gauche de l'image
+        //(la zone va du coin est un rectangle englobant le milieu de la video
+        var imgData = ctx2d.getImageData(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
+        var pixels = imgData.data;
+
+        //BLOC4
+        //Pour chaque pixels de la zone définie ci dessus
+        //on récupere les valeurs r g et b on fait la moyenne des valeurs
+        //et on associe cette moyenne au pixel
+        //le pixel est donc en niveau de gris
+        for (var x = 0; x <imgData.width ; x++)
+          for (var y = 0; y<imgData.height; y++) {
+            
+            var pos = (y * imgData.width + x)<<2;
+
+            var r = pixels[pos + 0], g = pixels[pos + 1], b = pixels[pos + 2], a = pixels[pos + 3];
+
+            var mean=(r+g+b)/3;
+
+            pixels[pos + 0] = mean;  pixels[pos + 1] = mean; pixels[pos + 2] = mean; pixels[pos + 3] = a;
+          }
+        ctx2d.putImageData(imgData,canvas.width/4, canvas.height/4);
+
+        requestAnimationFrame(loop);
+
+      };
+
+      loop();
+
+      </script>
+    </body>
+  </html>

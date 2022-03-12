@@ -1,0 +1,28 @@
+<html>
+<head>
+<script lang="js" src="../tools.js"></script>
+<script lang="js" src="../features/plans.js"></script>
+<script lang="js" src="../processing.js"></script>
+</head>
+<body>
+  <video autoplay src="../data/surprise.mp4" id="video" width="320" height="180"></video>
+  <div id="videoOutput"></div>
+  <br></br>
+  
+
+  <script lang="javascript">
+    
+    let seuil = 12;
+    var _output = document.getElementById("videoOutput");
+    var _opt_options = {output : _output, seuil : seuil};
+    var _task = new DetectionPlansTask(_opt_options);
+    var _procVideo = new processing("video", _task);
+    loop = function() {
+      _procVideo.do_process();
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+  </script>
+</body>
+</html>
