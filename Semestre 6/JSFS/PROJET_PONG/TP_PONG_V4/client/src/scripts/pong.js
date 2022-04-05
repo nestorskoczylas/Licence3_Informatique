@@ -5,10 +5,12 @@ import Game from './Game.js';
 const init = () => {
   const theField = document.getElementById("field");
   const theGame = new Game(theField);
+  const startButton = document.getElementById("start");
 
-  document.getElementById('start').addEventListener("click", () => {
+  startButton.addEventListener("click", () => {
     startGame(theGame);
-    document.getElementById("start").blur();
+    startButton.disabled = true;
+    
   });
 
   window.addEventListener('keydown', theGame.keyDownActionHandler.bind(theGame));
@@ -27,23 +29,25 @@ const startGame = theGame => {
   if (!started) {
     theGame.handleSocket();
     theGame.socket.on('number', (message) => {
-      document.getElementById('player').textContent = message < 3 ? `Bienvenue, joueur ${message}`:"Connexion refusée.";
+      const welcomeMess = document.getElementById('player');
+      welcomeMess.textContent = message < 3 ? `Bienvenue, joueur ${message}` : "Connexion refusée : trop de joueurs déjà connectés";
       switch(message) {
         case 1 :
-          document.getElementById("player").style.color = "blue";
+          welcomeMess.style.color = "blue";
+          document.getElementById("start").value = "En attente d'un second joueur";
           break;
         case 2 :
-          document.getElementById("player").style.color = "green";
+          welcomeMess.style.color = "green";
           break;
         case 3 :
-          document.getElementById("player").style.color = "red";
+          welcomeMess.style.color = "red";
           break;
       }
     });
   }
   else {
     theGame.socket.disconnect(true);
-    theGame.stop();
+    theGame.handleDisconnection();
   }
   started = ! started;
 }

@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const PRODUCTION = false;
+const PRODUCTION = true;
 
 module.exports = {
   entry: path.resolve(__dirname, 'src', 'scripts', 'pong.js'),
@@ -30,13 +30,6 @@ module.exports = {
 
   module: {
     rules: [
-      {
-        test: /\.m?js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader'
-        }
-      },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
@@ -85,14 +78,6 @@ module.exports = {
          ]
        }),
      ],
-
-
-  /* en cas de gestion de bibliothèques externes à exclure du buncle, ici cas de React pour l'exemple
-  externals : {
-    react: 'React',
-    react-dom: 'ReactDom',
-  },
-  */
 
   optimization: {
     minimize: true,

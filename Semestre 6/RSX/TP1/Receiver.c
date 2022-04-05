@@ -19,7 +19,7 @@ int main() {
   char buffer[SIZE];
   struct sockaddr_in addrTrgt;
   memset(&addrTrgt, 0, sizeof(addrTrgt));
-  //gestion d'erreur du memset
+  //gestion d'erreur du memset : memset != NULL
 
   sock = socket(AF_INET, SOCK_DGRAM, 0);
   if (sock < 0) {
@@ -32,10 +32,10 @@ int main() {
   addrTrgt.sin_addr.s_addr = INADDR_ANY;
 
   bindRet = bind(sock, &addrTrgt, sizeof(addrTrgt));
-  //gestion d'erreur du bind
+  //gestion d'erreur du bind : bindRet != -1
 
-  recvRet = recvfrom(sock, buffer, SIZE, MSG_WAITALL, 0, NULL);
-  //gestion d'erreur du recv
+  recvRet = recvfrom(sock, buffer, SIZE, MSG_WAITALL, 0, NULL); // MSG_WAITALL -> bloque le thread jusqu'à réception
+  //gestion d'erreur du recv : recvRet != -1
 
   close(sock);
   printf("%s\n", buffer);

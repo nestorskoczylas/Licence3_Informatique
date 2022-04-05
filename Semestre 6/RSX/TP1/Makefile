@@ -1,7 +1,7 @@
 CC = gcc
 
 run : myDNS MyDNS.c
-	./MyDNS
+	./myDNS
 
 DNSsimple : DNSsimple.c
 	$(CC) $? -o $@

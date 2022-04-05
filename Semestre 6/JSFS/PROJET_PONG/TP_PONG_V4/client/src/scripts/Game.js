@@ -1,5 +1,6 @@
 import Ball from './Ball.js';
 import Paddle from './Paddle.js'
+import MoveState from './MoveState';
 
 
 /**
@@ -50,15 +51,12 @@ export default class Game {
 
   /** start this game animation */
   start() {
-    document.getElementById('start').value = 'Disconnect';
+    document.getElementById('start').value = 'Déconnexion';
     this.animate();
   }
 
   /** stop this game animation */
   stop() {
-    const startBtn = document.getElementById('start');
-    startBtn.value = this.socket.disabled ? "Déconnecté" : this.onGoing() ? 'Jouer' : 'Appuyez sur Espace';
-    startBtn.disabled = true;
     window.cancelAnimationFrame(this.raf);
   }
 
@@ -81,26 +79,26 @@ export default class Game {
 
     // move the ball
     this.ball.move();
-    this.paddles.forEach(paddle => this.ball.checkForCollisionWith(paddle));
-    if(this.pNumber==1) this.declareBallMovement(this.ball);
+    this.paddles.forEach(paddle =>{
+      const collision = this.ball.checkForCollisionWith(paddle);
+      if(this.pNumber == 1 && collision) this.declareBallMovement();
+    });
 
     // move the paddles
     this.paddles.forEach(paddle => paddle.move());
     if (this.player != null) this.declarePaddleMovement(this.player);
   }
 
-  /* If the ball stopped moving, determines a winner, disables the play/stop button, and stops the animation */
+  /* If the ball stopped moving, determines a winner, updates the scores, and stops the animation */
   handleEndOfRound() {
     if (!this.onGoing()) {
       this.determineWinner();
-      this.handleDocumentEndOfRound();
+      this.updateScoresDisplay();
       this.stop();
     }
   }
 
-  /* Returns whether the ball is moving or not 
-  * Will also return true if the game was never started so far (so at startup)
-  */
+  /* Returns whether the ball is moving or not */
   onGoing() {
     return !this.ball.getStop();
   }
@@ -111,10 +109,9 @@ export default class Game {
     ++this.lastWinner.score;
   }
 
-  /* Called at the end of round to prevent player from clicking the play/stop button until they pressed the spacebar */
-  handleDocumentEndOfRound() {
+  /* Called at the end of round to update scores' display */
+  updateScoresDisplay() {
     document.getElementById("score").textContent = `${this.paddles[0].score} - ${this.paddles[1].score}`;
-    document.getElementById("start").disabled = true;
   }
 
   /* Called when round is over and player pressed the spacebar */
@@ -133,18 +130,18 @@ export default class Game {
     this.paddles.forEach(paddle => paddle.y = (this.canvas.height - Paddle.PADDLEHEIGHT) / 2);
     
     const startBtn = document.getElementById('start');
-    startBtn.value = 'Disconnect';
-    startBtn.disabled = false;
+    startBtn.value = 'Déconnexion';
+    this.disableStartButton(false);
     this.animate();
+    if(this.pNumber == 1) this.declareBallMovement();
   }
 
-  // ne pas bouger avant d'avoir connecté un player
   keyDownActionHandler(event) {
     try {
       switch (event.key) {
         case " ":
           if (!this.onGoing()) {
-            this.socket.emit('espace', event.key);
+            this.socket.emit('space', event.key);
           }
           break;
         case "ArrowUp":
@@ -186,25 +183,23 @@ export default class Game {
 
   handleSocket() {
     this.socket = io();
-    this.socket.on('number', (message) => this.welcomingMessage(message) );
-    this.socket.on('ready to start', () => this.start() );
-    this.socket.on('restart game', () => this.reinitializeGame() );
-    this.socket.on('other moved', (...message) => this.handleMobileMovement(this.otherPlayer, ...message) );
+    this.socket.on('number', (message) => this.welcomingMessage(message));
+    this.socket.on('ready to start', () => this.start());
+    this.socket.on('restart game', () => this.reinitializeGame());
+    this.socket.on('other moved', (...message) => this.handleMobileMovement(this.otherPlayer, ...message));
     this.socket.on('move ball', (...message) => this.handleMobileMovement(this.ball, ...message) );
-    this.socket.on('disconnect player', () => this.stop() );
+    this.socket.on('disconnect player', () => this.handleDisconnection());
   }
 
-  /**
-   * 
-   * @param {*} message for player connection
-   */
   welcomingMessage(message) {
     this.pNumber = message;
     if (message < 3) {
       this.player = this.paddles[this.pNumber - 1];
       this.otherPlayer = this.paddles[this.pNumber == 1 ? 1 : 0];
       console.log(`Welcome, player ${message}`);
-      // afficher sur la page le numéro de joueur plutôt que dans la console
+      if (this.player.score != 0 || this.otherPlayer.score != 0) {
+        this.handleRejoinError();
+      }
     }
     else {
       console.log("Connexion refused : too many players are already connected.")
@@ -212,20 +207,12 @@ export default class Game {
     }
   }
 
-  /**
-   * 
-   * @param {*} paddle send x and y postion to move paddle
-   */
   declarePaddleMovement(paddle) {
     this.socket.emit('my paddle moved', paddle.x, paddle.y);
   }
 
-  /**
-   * 
-   * @param {*} ball send x and y position to move this ball
-   */
-  declareBallMovement(ball) {
-    this.socket.emit('ball moved', ball.x, ball.y);
+  declareBallMovement() {
+    this.socket.emit('ball moved', this.ball.x, this.ball.y, this.ball.horizontalSpeed, this.ball.verticalSpeed);
   }
 
   /**
@@ -233,11 +220,30 @@ export default class Game {
    * @param {*} mobile either the other client's paddle, or the ball
    * @param  {...any} message the mobile's x and y coordinates to updated
    */
-  handleMobileMovement(mobile, ...message) {
-    const x = message[0];
-    const y = message[1];
+  handleMobileMovement(mobile, x, y, hSpeed, vSpeed) {
     mobile.x = x;
     mobile.y = y;
+    if (hSpeed && vSpeed) {
+      mobile.horizontalSpeed = hSpeed;
+      mobile.verticalSpeed = vSpeed;
+    }
   }
 
+  handleDisconnection() {
+    this.stop();
+    document.getElementById('player').textContent = "Déconnecté : un joueur a quitté.";
+    this.disableStartButton(true);
+    document.getElementById('start').value = 'Déconnecté';
+  }
+
+  handleRejoinError() {
+    this.socket.disconnect();
+    document.getElementById('player').textContent = "Erreur : veuillez rafraîchir la page.";
+    this.disableStartButton(true);
+    throw new Error("Joined an already existing game. Please disconnect and join back!");
+  }
+
+  disableStartButton(disabled) {
+    document.getElementById('start').disabled = disabled;
+  }
 }

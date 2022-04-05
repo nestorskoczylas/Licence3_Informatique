@@ -27,8 +27,12 @@ tri.o: tri.c main.h tri.h pile.h
 rapide.o: rapide.c pile.h tri.h rapide.h main.h
 main.o: main.c tri.h pile.h rapide.h main.h
 
-tri-rapide: all
+tri-rapide-ci: CFLAGS+=-Werror
+tri-rapide-ci: tri-rapide
+
+exec-rapide: all
 	dd if=/dev/urandom of=/tmp/alea bs=1048576 count=128
+	./tri-rapide -vcn 12 /tmp/alea
 
 clean:
 	rm -f core *.o

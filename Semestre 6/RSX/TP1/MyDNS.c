@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <assert.h>
 
-#define DESTIPV4  "1.1.1.1"
+#define DESTIPV4  "127.0.0.53"
 #define DESTPORT  53
 #define QUERY_LEN 29
 #define ANSW_LEN  512
@@ -70,6 +70,7 @@ int main(void) {
 /* Initialise la structure sockaddr_in avant l'envoi d'un message à l'@ destination */
 void init_dest_struct_and_send(int socket_fd, char *request) {
     struct sockaddr_in dest_addr;
+    memset(&dest_addr, 0, sizeof(struct sockaddr_in));
     dest_addr.sin_family = AF_INET;       // AF_INET signal le type d'adresse compatible avec le socket donc IPV4
     dest_addr.sin_port = htons(DESTPORT); // htons convertit DESTPORT (53) en byte
 
@@ -93,12 +94,15 @@ void init_dest_struct_and_send(int socket_fd, char *request) {
 /* Initialise la structure sockaddr_in et y inscrit les informations après réception du message si réussite */
 void init_reception_struct_and_receive(int socketfd, char *answer) {
     struct sockaddr_in src_addr;
+    memset(&src_addr, 0, sizeof(struct sockaddr_in));
     socklen_t rec_addr_len = sizeof(struct sockaddr_in);
     int message_len;
-    if ((message_len = recvfrom(socketfd, answer, ANSW_LEN, 0, (struct sockaddr *) &src_addr, &rec_addr_len)) < 0) {
+
+    if ((message_len = recvfrom(socketfd, answer, ANSW_LEN, 0, (struct sockaddr *) &src_addr, &rec_addr_len)) <= 0) {
       perror("recvfrom");
       exit(EXIT_FAILURE);
     }
+    printf("ici\n");
     if (answer != NULL) {
         /* Si réussite, affichage caractère par caractère du message tel qu'il a été reçu */
         print_message("as", answer, src_addr, message_len);
@@ -180,7 +184,7 @@ char *DNS_analysis(char *buffer, struct sockaddr_in sockstruct, int answer_lengt
 
         // affichage des deux champs précisant type et classe de la question
         for (k = 0; k < 4; k++, i++) {
-            printf("%.2X ", buffer[i]&0xff);        // affichage hexa
+            printf("%.2X ", buffer[i]&0xff);        // affichage hexa(.2X), et &0xFF applique un masque sur les caractères >256 (en gardant le byte de poids faible)
             if ((i-initial_i+1)%2==0) {             // si on a affiché les 2 hexa représentant un champs
                 int field_value = buffer[i]&0xff;
                 printf("%s", question[k/2]);       // affichera QTYPE puis QCLASS; part du principe que chaque champs fait 2 hexa

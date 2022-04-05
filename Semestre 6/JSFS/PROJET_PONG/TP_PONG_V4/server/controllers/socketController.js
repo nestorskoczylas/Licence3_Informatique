@@ -37,12 +37,12 @@ export default class SocketController {
       this.#players.set(nb, socket);
 
       socket.on( 'my paddle moved', (...mess) => this.handlePaddleMovement(socket, ...mess) );
-      socket.on( 'disconnect', () => this.handleDisconnexion(sId) );      
-      socket.on( 'espace', (mess) => this.handleReadyToStart(mess) );
+      socket.on( 'disconnect', () => this.handleDisconnection(sId) );      
+      socket.on( 'space', (mess) => this.handleReadyToStart(mess) );
 
       // First player's client will handle the ball's position
       if (nb == 1) {
-        socket.on( 'ball moved', (...mess) => this.handleBallMovement(socket, ...mess) );
+        socket.on( 'ball moved', (x, y, hSpeed, vSpeed) => this.handleBallMovement(socket, x, y, hSpeed, vSpeed) );
       }
       else {
         this.handleReadyToStart('ready to start');
@@ -56,7 +56,7 @@ export default class SocketController {
     }
   }
 
-  handleDisconnexion(socketid) {
+  handleDisconnection(socketid) {
     console.log(`Disconnecting ${socketid} : one player disconnected. End of game.`);
     this.#io.emit('disconnect player');
     this.#io.disconnectSockets();
@@ -82,9 +82,9 @@ export default class SocketController {
    * @param socket informing of its client's movement
    * @param  {...any} message containing the client's ball new x and y coordinates
    */
-  handleBallMovement(socket, ...message) {
+  handleBallMovement(socket, x, y, hSpeed, vSpeed) {
     try {
-      this.getOtherClient(socket).emit('move ball', ...message);
+      this.getOtherClient(socket).emit('move ball', x, y, hSpeed, vSpeed);
     }
     catch {
       console.log("A movement happened before a second player joined...");
@@ -96,10 +96,7 @@ export default class SocketController {
    * @param {*} mess contains the game launch or restart message 
    */
   handleReadyToStart(mess) {
-    if(mess === " ") {
-      this.#io.emit('restart game');
-    }
-    this.#io.emit(mess);
+    this.#io.emit('restart game');
   }
 
   /**

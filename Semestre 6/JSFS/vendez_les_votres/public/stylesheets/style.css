@@ -1,0 +1,183 @@
+body {
+  padding: 15px;
+  display: block;
+  margin: 10px;
+  font-family: "Market Sans",Arial,sans-serif;
+  box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 50%);
+}
+
+div {
+  width : 280px;
+  margin : auto;
+  padding : 2px;
+  text-align :center;
+}
+
+div label {
+  padding : 7px;
+}
+
+input {
+  text-align : center;
+}
+
+#image {
+  font-style : italic;
+}
+
+button {
+  padding : 3px;
+  width : 100px;
+  margin : 0px 5px;
+  font-weight : bold;
+}
+
+#userdata {
+  background-color : #DDD;
+}
+
+#userdata div{
+  text-align : right;
+  margin : 2px;
+}
+
+#controls {
+  margin-top : 10px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#itemslist {
+  border : solid 2px #404040;
+  padding : 4px;
+  margin: 10px auto;
+}
+tr.item {
+  border : solid thin #404040;
+  background-color : #E0E0E0;
+}
+
+table {
+  table-layout: auto;
+  width: 100%;
+}
+
+td.title a {
+  min-width: 100px;
+  padding : 2px 5px;
+  font-weight : bold;
+  text-decoration : none;
+  color : black;
+  font-size : 24px;
+}
+td.price {
+  width: 105px;
+  text-align: center;
+}
+td.delete {
+  text-align: center;
+  font-size : 20px;
+}
+td.delete a {
+  color : red;
+  font-weight : bold;
+  text-decoration : none;
+  width: 105px;
+}
+td.button {
+  width: 105px;
+}
+
+.image {
+  width : 100px;
+  padding  : 5px;
+  background-color: rgba(100,155,100,0.5);
+}
+.image img {
+  width : 100%;
+}
+
+code {
+  font-size : larger;
+}
+
+#lastBought {
+  margin-top : 10px;
+  background-color : rgba(222, 243, 32, 0.5);
+  padding : 3px;
+}
+
+
+input {
+  font-size : 24px;
+  margin : 0px 2px;
+}
+
+#answer {
+  margin-top : 10px;
+  background-color : rgba(200,20,20,0.5);
+  padding : 3px;
+}
+
+/* navigation bar and collapsible creation form very much inspired by w3school tutorials */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+  font-family: Verdana, sans-serif;
+}
+
+li a {
+  border-right: 1px solid #bbb;
+  display: block;
+  font-size: .95rem;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+li a:hover {
+  background-color: #04aa6d86;
+}
+
+.active {
+  background-color: #04AA6D;
+  text-decoration: underline;
+  text-decoration-color:rgb(255, 255, 255);
+  text-decoration-thickness: 2px;
+  text-underline-position: under;
+}
+
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: center;
+  outline: none;
+  font-size: 15px;
+}
+
+.active-collaps, .collapsible:hover {
+  background-color: #ccc;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}

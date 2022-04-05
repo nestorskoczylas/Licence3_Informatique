@@ -1,0 +1,17 @@
+extends layout
+
+append headblock
+    script(src="/javascripts/register.client.js", defer="true")
+
+block content
+  title= title
+  - var theuser
+  - if (user) { theuser = user } else { theuser =  { name : '', money : '', password : ''} }
+  h1 Créez un compte Vendez-les-vôtres
+  div(id='userdata')
+    input#userlogin(type="text", placeholder="Identifiant", value= theuser.userlogin)
+    input#userpassword(type="password", placeholder="Mot de passe", value= theuser.userpassword)
+  div(id='controls')
+    button#register S'enregistrer
+  #problem
+  a(href="/access/login")= "Vous avez déjà un compte ?"

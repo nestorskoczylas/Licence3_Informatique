@@ -1,0 +1,15 @@
+extends layout
+
+append headblock
+    script(src="/javascripts/login.client.js", defer="true")
+
+block content
+  title= title
+  h1 Connexion à votre compte Vendez-les-vôtres
+  div(id='userdata')
+    input#userlogin(type="text", placeholder="Identifiant", value= userlogin)
+    input#userpassword(type="password", placeholder="Mot de passe", value= userpassword)
+  div(id='controls')
+    button#login Connexion
+  #problem
+  a(href="/access/register")= "Ou créez un compte"

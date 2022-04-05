@@ -1,0 +1,13 @@
+extends layout
+
+append headblock
+    script(src="/javascripts/user.client.js", defer="true")
+
+block content
+  title= title
+  h1 Modification d'identifiant
+  div(id='userdata')
+    input#userlogin(type="text", placeholder="Pseudo", value= userlogin)
+  div(id='controls')
+    button#update Mise à jour
+    button#logout Déconnexion

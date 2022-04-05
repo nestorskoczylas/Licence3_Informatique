@@ -1,0 +1,30 @@
+doctype html
+
+mixin createImage(imgSrc)
+  .image
+    img(src=imgSrc)
+
+html
+  head
+    block headblock
+      title= title
+      link(rel='icon', href='/images/favicon.ico')
+      link(rel='stylesheet', href='/stylesheets/style.css')
+      
+  block nav
+    - var active
+      ul
+        li(class=(title === "Vendez les vôtres" ? "active" : undefined))
+          a(class='nav-p' id='index' href='/') Accueil
+        li(class=(title === "Gestion du compte" ? "active" : undefined))
+          a(class='nav-p' id='user' href='/user') Gestion du compte
+        li(class=(title === "Annonces" ? "active" : undefined))
+          a(class='nav-p' id='itemsSPA' href='/itemsSPA') Annonces
+      
+
+  body
+    block content
+
+  footer
+    block footblock
+      p Licence 3 - #[em Javascript Full Stack] - Ledun Alexandre & Nestor Skoczylas - 2022

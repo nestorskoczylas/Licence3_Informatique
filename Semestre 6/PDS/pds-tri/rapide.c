@@ -10,7 +10,13 @@
 #include "rapide.h"
 #include "main.h"
 
-unsigned long seuil_bloc_long = 1;
+pile p;
+
+/* Initialisation des mutex (Mutex) et cond (Condition) avec des constantes statiques */
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+
+unsigned long seuil_bloc_long = 10000;
 
 base_t *tableau;
 
@@ -105,11 +111,6 @@ void rapide_seq(bloc_t bloc_init) {
 
 void rapide(pos_t taille, unsigned int nb_threads) {
     bloc_t bloc;
-    pile p;
-    unsigned int i;
-    pthread_t t_id[nb_threads];
-
-    init_pile(&p);
 
     bloc.debut = 0;
     bloc.fin = taille - 1;
@@ -118,77 +119,58 @@ void rapide(pos_t taille, unsigned int nb_threads) {
         rapide_seq(bloc);
         return;
     }
-    else {
-        assert(nb_threads > 1);
-        empile(&p, bloc);
+    assert(nb_threads > 1);
 
-        /* Création des n threads (fred) */
-        for (i = 0; i < nb_threads; i++) {
-            assert(pthread_create(&(t_id[i]), NULL, tri_func, &p) == 0);
-        }
+    init_pile(&p);
+    empile(&p, bloc);
 
-        /*Après avoir été lancé, on les "join" et une fois qu'ils ont fini on arrête le programme */
-        for (i = 0; i < nb_threads; i++) {
-            assert(pthread_join(t_id[i], (void **) 0) == 0);
-        }
+    unsigned int i;
+    pthread_t t_id[nb_threads];
+
+    /* Création des n threads (fred) */
+    for (i = 0; i < nb_threads; i++) {
+        assert(pthread_create(&(t_id[i]), NULL, (void*) &tri_func, NULL) == 0);
+    }
+
+    /*Après avoir été lancé, on les "join" et une fois qu'ils ont fini on arrête le programme */
+    for (i = 0; i < nb_threads; i++) {
+        assert(pthread_join(t_id[i], NULL) == 0);
     }
 }
 
 void * tri_func(void * arg) {
-    pile *p = (pile*) malloc(sizeof(pile)); //pile commune à tous les threads
-    p = arg;
+    
+    assert(arg == NULL);
 
-    int count = 0; // nb threads en cours d'exécution
-    int i, nb_blocs, var;
-
-    /* Initialisation des mutex (Mutex) et cond (Condition) avec des constantes statiques */
-    static pthread_mutex_t pile_mutex = PTHREAD_MUTEX_INITIALIZER;
-    static pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER;
-    static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+    int i, nb_blocs;
 
     bloc_t bloc;
     bloc_t blocs[2];
 
-    /* Traitement des tâches */
-    while(!pile_vide(p) || count > 0) {
+    while(1 == 1) {
+        assert(pthread_mutex_lock(&mutex) == 0);
+        if(!pile_vide(&p)) {
+            bloc = depile(&p);
 
-        pthread_mutex_lock(&pile_mutex);    //vérouillage de l'accès à la pile
-
-        /* si la pile est vide et qu'il y a encore des tâches alors : */
-        while(pile_vide(p) && count > 0) {
-            pthread_cond_wait(&cond, &pile_mutex);    //dévérouille automatiquement le mutex (syn. pthread_mutex_unlock) & exécution du threads suspendu
-        }
-        /* si la pile est vide alors : */
-        if(pile_vide(p)) {
-            pthread_cond_signal(&cond);    // relancement des threads
-            break;    // fin du tri
+            if((long unsigned int)bloc.fin - bloc.debut > seuil_bloc_long) {
+                nb_blocs = rapide_decoupebloc(bloc, blocs);
+                
+                for(i = 0; i < nb_blocs; i++) {
+                    empile(&p, blocs[i]);
+                }
+                //assert(pthread_cond_broadcast(&cond) == 0);
+                assert(pthread_mutex_unlock(&mutex) == 0);
+            }
+            else {
+                assert(pthread_mutex_unlock(&mutex) == 0);
+                rapide_seq(bloc);
+            }
+            //assert(pthread_cond_wait(&cond, &mutex) == 0);
         }
         else {
-            pthread_mutex_lock(&count_mutex);
-
-            count++;    // ajout d'un thread à count;
-
-            pthread_mutex_lock(&count_mutex);
-            bloc = depile(p);
-
-            nb_blocs = rapide_decoupebloc(bloc, blocs);    // tri du bloc
-
-            var = nb_blocs;    // stock le nombre de bloc dans une varible
-
-            for(i = 0; i < var; i++) {
-                empile(p, blocs[i]);    // création de  0 à 2 tâches en plus
-                pthread_cond_signal(&cond);    // autre thread qui attend d'avoir une tâche à faire
-            }
-
-            pthread_mutex_lock(&count_mutex);
-            count--;
-            pthread_mutex_unlock(&count_mutex);
-
-            pthread_mutex_unlock(&pile_mutex);    //libération de l'accès à la pile
+            assert(pthread_mutex_unlock(&mutex) == 0);
+            return NULL;
         }
     }
-    pthread_cond_signal(&cond);    // retire tous les threads
-    pthread_mutex_unlock(&pile_mutex);
-
-    return 0;
+    return NULL;
 }

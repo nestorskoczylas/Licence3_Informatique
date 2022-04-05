@@ -1,7 +1,7 @@
 import Mobile from './Mobile';
 import MoveState from './MoveState';
 
-const paddleImg = '../images/paddle.png';
+const paddleImg = './images/paddle.png';
 const SHIFT_Y = 7;
 
 export default class Paddle extends Mobile {

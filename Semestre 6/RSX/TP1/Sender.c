@@ -18,7 +18,7 @@ int main(void) {
   char * buffer = "coucou";
   struct sockaddr_in addrDest;
   memset(&addrDest, 0, sizeof(addrDest));
-  //gestion d'erreur du memset
+  //gestion d'erreur du memset : memset != NULL
 
   sock = socket(AF_INET, SOCK_DGRAM, 0);
   if (sock < 0) {

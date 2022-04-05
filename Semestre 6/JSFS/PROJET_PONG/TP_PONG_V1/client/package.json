@@ -2,7 +2,7 @@
   "name": "pong",
   "description": "pong",
   "author": "ledun_skoczylas",
-  "version": "1.0.0",
+  "version": "1.0",
   "main": "./src/scripts/pong.js",
   "scripts": {
     "build": "webpack",
@@ -11,11 +11,6 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.16.5",
-    "@babel/plugin-transform-runtime": "^7.16.10",
-    "@babel/preset-env": "^7.16.5",
-    "@babel/preset-react": "^7.16.5",
-    "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.0",
     "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
@@ -25,9 +20,5 @@
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0"
-  },
-  "dependencies": {
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
   }
 }
